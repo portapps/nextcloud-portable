@@ -28,6 +28,17 @@
         <filename name="vcredist*"/>
       </fileset>
     </delete>
+
+    <!-- i18n folder -->
+    <delete dir="${extract.path}\i18n\$R2"/>
+    <delete>
+      <fileset dir="${extract.path}\i18n" includes="$R*"/>
+    </delete>
+    <delete>
+      <fileset dir="${extract.path}\i18n">
+        <filename name="vcredist*"/>
+      </fileset>
+    </delete>
   </target>
 
 </project>
