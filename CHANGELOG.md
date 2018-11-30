@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.0-3 (2018/12/01)
+
+* Nextcloud 2.5.0 only works on 64-bits platform (Issue #1)
+
 ## 2.5.0-2 (2018/11/12)
 
 * Upgrade to Nextcloud 2.5.0
