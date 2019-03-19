@@ -6,45 +6,32 @@ import (
 	"os"
 
 	. "github.com/portapps/portapps"
+	"github.com/portapps/portapps/pkg/utl"
+)
+
+var (
+	app *App
 )
 
 func init() {
-	Papp.ID = "nextcloud-portable"
-	Papp.Name = "Nextcloud"
-	Init()
+	var err error
+
+	// Init app
+	if app, err = New("nextcloud-portable", "Nextcloud"); err != nil {
+		Log.Fatal().Err(err).Msg("Cannot initialize application. See log file for more info.")
+	}
 }
 
 func main() {
-	Papp.AppPath = AppPathJoin("app")
-	Papp.DataPath = CreateFolder(AppPathJoin("data"))
+	confPath := utl.CreateFolder(app.DataPath, "conf")
+	utl.CreateFolder(app.DataPath, "storage")
 
-	confPath := CreateFolder(PathJoin(Papp.DataPath, "conf"))
-	CreateFolder(PathJoin(Papp.DataPath, "storage"))
-
-	Papp.Process = PathJoin(Papp.AppPath, "nextcloud.exe")
-	Papp.Args = []string{
+	utl.CreateFolder(app.DataPath)
+	app.Process = utl.PathJoin(app.AppPath, "nextcloud.exe")
+	app.Args = []string{
 		"--confdir",
 		confPath,
 	}
-	Papp.WorkingDir = Papp.AppPath
 
-	// Update nextcloud settings
-	/*nextcloudSettingsPath := PathJoin(confPath, "nextcloud.cfg")
-	if _, err := os.Stat(nextcloudSettingsPath); err == nil {
-		Log.Info("Update Nextcloud settings...")
-		cfg, err := ini.Load(nextcloudSettingsPath)
-		if err != nil {
-			Log.Error("Fail to read file:", err)
-		}
-		keys := cfg.Section("Accounts").Keys()
-		for _, key := range keys {
-			if strings.Contains(key.Name(), "localPath") {
-				Log.Info("Update path of %s : %s", key.Name(), key.Value())
-			}
-		}
-	} else {
-		Log.Warningf("Nextcloud settings not found in %s", nextcloudSettingsPath)
-	}*/
-
-	Launch(os.Args[1:])
+	app.Launch(os.Args[1:])
 }
