@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.2-1 (2019/03/19)
+
+* Upgrade to Nextcloud 2.5.2
+* Portapps 1.20.3
+
 ## 2.5.1-4 (2018/12/05)
 
 * Upgrade to Nextcloud 2.5.1
