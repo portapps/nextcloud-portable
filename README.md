@@ -12,13 +12,15 @@
 
 ## Notice of Non-Affiliation and Disclaimer
 
-Portapps is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Nextcloud, or any of its subsidiaries or its affiliates. The official Nextcloud website can be found at https://nextcloud.com/.
+Portapps is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Nextcloud™, or any of its subsidiaries or its affiliates.
 
-The name Nextcloud® as well as related names, marks, emblems and images are registered trademarks of their respective owners.
+The official Nextcloud™ website can be found at https://nextcloud.com/.
+
+The name Nextcloud™ as well as related names, marks, emblems and images are registered trademarks of their respective owners.
 
 ## About
 
-Nextcloud portable app made with 🚀 [Portapps](https://portapps.io).<br />
+Nextcloud™ portable app made with 🚀 [Portapps](https://portapps.io).<br />
 Documentation and downloads can be found on https://portapps.io/app/nextcloud-portable/
 
 ## How can I help ?
