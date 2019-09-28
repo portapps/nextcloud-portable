@@ -20,11 +20,11 @@
     <delete dir="${extract.path}\$PLUGINSDIR"/>
     <delete dir="${extract.path}\$R2"/>
     <delete>
-      <fileset dir="${extract.path}" includes="$R*"/>
+      <fileset dir="${extract.path}" defaultexcludes="no" includes="$R*"/>
     </delete>
     <delete file="${extract.path}\uninstall.exe.nsis"/>
     <delete>
-      <fileset dir="${extract.path}">
+      <fileset dir="${extract.path}" defaultexcludes="no">
         <filename name="vcredist*"/>
       </fileset>
     </delete>
@@ -32,10 +32,10 @@
     <!-- i18n folder -->
     <delete dir="${extract.path}\i18n\$R2"/>
     <delete>
-      <fileset dir="${extract.path}\i18n" includes="$R*"/>
+      <fileset dir="${extract.path}\i18n" defaultexcludes="no" includes="$R*"/>
     </delete>
     <delete>
-      <fileset dir="${extract.path}\i18n">
+      <fileset dir="${extract.path}\i18n" defaultexcludes="no">
         <filename name="vcredist*"/>
       </fileset>
     </delete>
