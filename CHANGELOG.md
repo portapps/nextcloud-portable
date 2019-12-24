@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.6.2-5 (2019/12/24)
+
+* Nextcloud 2.6.2
+* Add `cleanup` config
+* Portapps 1.31.0
+
 ## 2.6.1-4 (2019/11/07)
 
 * Nextcloud 2.6.1
