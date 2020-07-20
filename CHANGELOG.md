@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.6.5-8 (2020/07/20)
+
+* Nextcloud 2.6.5
+* Portapps 2.4.4
+
 ## 2.6.4-7 (2020/03/09)
 
 * Nextcloud 2.6.4
