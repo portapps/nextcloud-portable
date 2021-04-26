@@ -17,28 +17,15 @@
   <target name="release" depends="release.app" description="Release"/>
 
   <target name="prepare">
-    <delete dir="${extract.path}\$PLUGINSDIR"/>
-    <delete dir="${extract.path}\$R2"/>
-    <delete>
-      <fileset dir="${extract.path}" defaultexcludes="no" includes="$R*"/>
-    </delete>
-    <delete file="${extract.path}\uninstall.exe.nsis"/>
-    <delete>
-      <fileset dir="${extract.path}" defaultexcludes="no">
-        <filename name="vcredist*"/>
-      </fileset>
-    </delete>
+    <echo message="Preparing release..."/>
 
-    <!-- i18n folder -->
-    <delete dir="${extract.path}\i18n\$R2"/>
-    <delete>
-      <fileset dir="${extract.path}\i18n" defaultexcludes="no" includes="$R*"/>
-    </delete>
-    <delete>
-      <fileset dir="${extract.path}\i18n" defaultexcludes="no">
-        <filename name="vcredist*"/>
-      </fileset>
-    </delete>
+    <move todir="${tmp.path}\extract2">
+      <fileset dir="${extract.path}\${msi.app}\PFiles\Nextcloud" defaultexcludes="no"/>
+    </move>
+    <delete dir="${extract.path}"/>
+    <move todir="${extract.path}\${msi.app}">
+      <fileset dir="${tmp.path}\extract2" defaultexcludes="no"/>
+    </move>
   </target>
 
 </project>
