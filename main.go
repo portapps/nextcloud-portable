@@ -5,7 +5,9 @@ package main
 import (
 	"os"
 	"path"
+	"path/filepath"
 
+	"github.com/go-ini/ini"
 	"github.com/portapps/portapps/v3"
 	"github.com/portapps/portapps/v3/pkg/log"
 	"github.com/portapps/portapps/v3/pkg/utl"
@@ -43,6 +45,28 @@ func main() {
 	app.Args = []string{
 		"--confdir",
 		confPath,
+	}
+
+	confFilePath := filepath.Join(confPath, "nextcloud.cfg")
+	if _, err := os.Stat(confFilePath); err == nil {
+		ini.PrettyFormat = false
+		log.Info().Msg("Update configuration...")
+		conf, err := ini.LoadSources(ini.LoadOptions{
+			IgnoreInlineComment:         true,
+			SkipUnrecognizableLines:     false,
+			UnescapeValueDoubleQuotes:   true,
+			UnescapeValueCommentSymbols: true,
+			PreserveSurroundedQuote:     true,
+			SpaceBeforeInlineComment:    true,
+		}, confFilePath)
+		if err == nil {
+			conf.Section("General").Key("skipUpdateCheck").SetValue("true")
+			if err := conf.SaveTo(confFilePath); err != nil {
+				log.Error().Err(err).Msg("Write configuration")
+			}
+		} else {
+			log.Error().Err(err).Msg("Load nextcloud.cfg file")
+		}
 	}
 
 	// Cleanup on exit
