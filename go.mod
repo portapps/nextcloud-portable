@@ -2,7 +2,10 @@ module github.com/portapps/nextcloud-portable
 
 go 1.21
 
-require github.com/portapps/portapps/v3 v3.9.0
+require (
+	github.com/go-ini/ini v1.67.0
+	github.com/portapps/portapps/v3 v3.9.0
+)
 
 require (
 	github.com/akavel/rsrc v0.10.2 // indirect
