@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/go-ini/ini v1.67.0
-	github.com/portapps/portapps/v3 v3.9.0
+	github.com/portapps/portapps/v3 v3.10.0
 )
 
 require (
@@ -15,7 +15,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rs/zerolog v1.31.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	github.com/rs/zerolog v1.32.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
