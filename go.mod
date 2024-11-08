@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/go-ini/ini v1.67.0
-	github.com/portapps/portapps/v3 v3.14.0
+	github.com/portapps/portapps/v3 v3.14.1
 )
 
 require (
