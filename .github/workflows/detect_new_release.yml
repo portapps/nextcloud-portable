@@ -1,0 +1,103 @@
+name: Detect new upstream release
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+      # every Monday at 04:05AM (UTC)
+      - cron: "5 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+
+jobs:
+  compare-release-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch latest release tag of nextcloud/desktop
+        id: fetch_desktop_tag
+        run: |
+          desktop_json=$(curl -s https://api.github.com/repos/nextcloud/desktop/releases/latest)
+          
+          desktop_tag=$(echo "$desktop_json" | jq -r '.tag_name')
+          echo "Latest release tag of nextcloud/desktop: $desktop_tag"
+          echo "desktop_tag=$desktop_tag" >> $GITHUB_OUTPUT
+
+          desktop_body=$(echo "$desktop_json" | jq -r '.body')
+          echo "Latest release body of nextcloud/desktop: $desktop_body"
+          echo "desktop_body=$desktop_body" >> $GITHUB_OUTPUT
+
+      - name: Fetch latest release tag of portapps/nextcloud-portable
+        id: fetch_portable_tag
+        run: |
+          portable_tag=$(curl -s https://api.github.com/repos/portapps/nextcloud-portable/releases/latest | jq -r '.tag_name')
+          echo "Latest release tag of portapps/nextcloud-portable: $portable_tag"
+          echo "portable_tag=$portable_tag" >> $GITHUB_OUTPUT
+
+      - name: Compare release tags
+        id: compare_tags
+        run: |
+          desktop_tag=${{ steps.fetch_desktop_tag.outputs.desktop_tag }}
+          portable_tag=${{ steps.fetch_portable_tag.outputs.portable_body }}
+
+          # remove 'v' prefix
+          desktop_tag=$(echo "$desktop_tag" | cut -d "v" -f 2)
+
+          # remove internal release id
+          portable_tag=$(echo "$portable_tag" | cut -d "-" -f 1)
+
+          if [ "$desktop_tag" != "$portable_tag" ]; then
+            echo "The latest release tags '$portable_tag' <--> '$desktop_tag' are different."
+            echo "tags_differ=true" >> $GITHUB_OUTPUT
+          else
+            echo "The latest release tags are the same: $desktop_tag"
+            echo "tags_differ=false" >> $GITHUB_OUTPUT
+          fi
+
+  trigger-notification:
+    needs: compare-release-tags
+    if: needs.compare-release-tags.outputs.tags_differ == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate issue contents
+        id: issue_contents
+        run: |
+          new_version=${{ needs.compare-release-tags.outputs.desktop_tag }}
+          new_body=${{ needs.compare-release-tags.outputs.desktop_tag }}
+
+          issue_title="New upstream release $new_version available"
+          echo "issue_title=$issue_title" >> $GITHUB_OUTPUT
+
+          issue_body="**release notes** of version $new_version:\n\n$new_body"
+          echo "issue_body=$issue_body" >> $GITHUB_OUTPUT
+
+      - name: Check if issue exists
+        id: check_issue
+        run: |
+          ISSUES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/issues?state=open&labels=news" | jq -r '.[].title')
+          
+          issue_title=${{ steps.issue_contents.outputs.issue_title }}
+          issue_body=${{ steps.issue_contents.outputs.issue_body }}
+          
+          for title in $ISSUES; do
+            if [ "$title" == "$issue_title" ]; then
+              echo "Issue '$issue_title' already exists"
+              exit 0
+            fi
+          done
+          echo "Issue '$issue_title' does not exist"
+
+      - name: Create new issue
+        if: steps.check_issue.outputs.exists == 'false'
+        run: |
+          curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d '{"title": "$issue_title", "body": "$issue_body", "labels": ["news"]}' \
+          "https://api.github.com/repos/${{ github.repository }}/issues"
+
