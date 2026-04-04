@@ -1,5 +1,4 @@
 //go:generate go install -v github.com/josephspurrier/goversioninfo/cmd/goversioninfo
-//go:generate goversioninfo -icon=res/papp.ico -manifest=res/papp.manifest
 package main
 
 import (
@@ -41,7 +40,7 @@ func main() {
 	utl.CreateFolder(app.DataPath, "storage")
 
 	utl.CreateFolder(app.DataPath)
-	app.Process = utl.PathJoin(app.AppPath, "nextcloud.exe")
+	app.Process = filepath.Join(app.AppPath, "nextcloud.exe")
 	app.Args = []string{
 		"--confdir",
 		confPath,
