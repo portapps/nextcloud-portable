@@ -3,13 +3,12 @@ package main
 
 import (
 	"os"
-	"path"
 	"path/filepath"
 
 	"github.com/go-ini/ini"
 	"github.com/portapps/portapps/v3"
+	"github.com/portapps/portapps/v3/pkg/files"
 	"github.com/portapps/portapps/v3/pkg/log"
-	"github.com/portapps/portapps/v3/pkg/utl"
 )
 
 type config struct {
@@ -36,10 +35,17 @@ func init() {
 }
 
 func main() {
-	confPath := utl.CreateFolder(app.DataPath, "conf")
-	utl.CreateFolder(app.DataPath, "storage")
+	confPath := filepath.Join(app.DataPath, "conf")
+	for _, dir := range []string{
+		confPath,
+		filepath.Join(app.DataPath, "storage"),
+		app.DataPath,
+	} {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			log.Fatal().Err(err).Msgf("Cannot create directory %s", dir)
+		}
+	}
 
-	utl.CreateFolder(app.DataPath)
 	app.Process = filepath.Join(app.AppPath, "nextcloud.exe")
 	app.Args = []string{
 		"--confdir",
@@ -71,9 +77,7 @@ func main() {
 	// Cleanup on exit
 	if cfg.Cleanup {
 		defer func() {
-			utl.Cleanup([]string{
-				path.Join(os.Getenv("LOCALAPPDATA"), "Nextcloud"),
-			})
+			files.Cleanup(filepath.Join(os.Getenv("LOCALAPPDATA"), "Nextcloud"))
 		}()
 	}
 
