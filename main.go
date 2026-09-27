@@ -54,10 +54,10 @@ func main() {
 	}
 
 	confFilePath := filepath.Join(confPath, "nextcloud.cfg")
+	ini.PrettyFormat = false
+	conf := ini.Empty()
 	if _, err := os.Stat(confFilePath); err == nil {
-		ini.PrettyFormat = false
-		log.Info().Msg("Update configuration...")
-		conf, err := ini.LoadSources(ini.LoadOptions{
+		conf, err = ini.LoadSources(ini.LoadOptions{
 			IgnoreInlineComment:         true,
 			SkipUnrecognizableLines:     false,
 			UnescapeValueDoubleQuotes:   true,
@@ -65,14 +65,15 @@ func main() {
 			PreserveSurroundedQuote:     true,
 			SpaceBeforeInlineComment:    true,
 		}, confFilePath)
-		if err == nil {
-			conf.Section("General").Key("skipUpdateCheck").SetValue("true")
-			if err := conf.SaveTo(confFilePath); err != nil {
-				log.Error().Err(err).Msg("Write configuration")
-			}
-		} else {
-			log.Error().Err(err).Msg("Load nextcloud.cfg file")
+		if err != nil {
+			log.Fatal().Err(err).Msg("Load nextcloud.cfg file")
 		}
+	} else if !os.IsNotExist(err) {
+		log.Fatal().Err(err).Msg("Stat nextcloud.cfg file")
+	}
+	conf.Section("General").Key("skipUpdateCheck").SetValue("true")
+	if err := conf.SaveTo(confFilePath); err != nil {
+		log.Fatal().Err(err).Msg("Write nextcloud.cfg file")
 	}
 
 	// Cleanup on exit
