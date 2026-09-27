@@ -71,7 +71,11 @@ func main() {
 	} else if !os.IsNotExist(err) {
 		log.Fatal().Err(err).Msg("Stat nextcloud.cfg file")
 	}
-	conf.Section("General").Key("skipUpdateCheck").SetValue("true")
+	general := conf.Section("General")
+	general.Key("skipUpdateCheck").SetValue("true")
+	if !general.HasKey("showInExplorerNavigationPane") {
+		general.Key("showInExplorerNavigationPane").SetValue("false")
+	}
 	if err := conf.SaveTo(confFilePath); err != nil {
 		log.Fatal().Err(err).Msg("Write nextcloud.cfg file")
 	}
