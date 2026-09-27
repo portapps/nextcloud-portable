@@ -37,13 +37,27 @@ func init() {
 
 func main() {
 	confPath := filepath.Join(app.DataPath, "conf")
+	cachePath := filepath.Join(app.DataPath, "cache")
 	for _, dir := range []string{
 		confPath,
+		filepath.Join(cachePath, "qml"),
+		filepath.Join(cachePath, "pipeline"),
 		filepath.Join(app.DataPath, "storage"),
 		app.DataPath,
 	} {
 		if err := os.MkdirAll(dir, 0o755); err != nil {
 			log.Fatal().Err(err).Msgf("Cannot create directory %s", dir)
+		}
+	}
+	for name, path := range map[string]string{
+		"QML_DISK_CACHE_PATH":         filepath.Join(cachePath, "qml"),
+		"QSG_RHI_PIPELINE_CACHE_LOAD": filepath.Join(cachePath, "pipeline", "cache.bin"),
+		"QSG_RHI_PIPELINE_CACHE_SAVE": filepath.Join(cachePath, "pipeline", "cache.bin"),
+	} {
+		if _, ok := os.LookupEnv(name); !ok {
+			if err := os.Setenv(name, path); err != nil {
+				log.Fatal().Err(err).Msgf("Set %s", name)
+			}
 		}
 	}
 
