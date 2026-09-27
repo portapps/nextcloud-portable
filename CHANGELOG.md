@@ -1,5 +1,13 @@
 # Changelog
 
+## 34.0.4-25 (2026/09/27)
+
+* Nextcloud 34.0.4
+* Disable Nextcloud updates on first launch
+* Disable Nextcloud Explorer navigation by default
+* Store QML and pipeline caches in portable data
+* Portapps 3.19.0
+
 ## 33.0.2-24 (2026/04/13)
 
 * Nextcloud 33.0.2
